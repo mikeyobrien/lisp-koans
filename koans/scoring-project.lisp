@@ -50,7 +50,40 @@
 ;;; Your goal is to write the scoring function for Greed.
 
 (defun score (&rest dice)
-  ____)
+  (let* ((score 0)
+         (result (loop for x in dice
+                 when (equal x 1) count x into ones
+                 when (equal x 2) count x into twos
+                 when (equal x 3) count x into threes
+                 when (equal x 4) count x into fours
+                 when (equal x 5) count x into fives
+                 when (equal x 6) count x into sixes
+                 finally (return (list ones twos threes fours fives sixes)))))
+    (destructuring-bind (ones twos threes fours fives sixes) result
+      (if (>= ones 3)
+        (setf score (+ score 1000)
+              ones (- ones 3)))
+      (if (>= twos 3)
+        (setf score (+ score 200)
+              twos (- twos 3)))
+      (if (>= threes 3)
+        (setf score (+ score 300)
+              threes (- threes 3)))
+      (if (>= fours 3)
+        (setf score (+ score 400)
+              fours (- fours 3)))
+      (if (>= fives 3)
+        (setf score (+ score 500)
+              fives (- fives 3)))
+      (if (>= sixes 3)
+        (setf score (+ score 600)
+              sixes (- sixes 3)))
+      (if (< ones 3)
+          (setf score (+ score (* 100 ones))))
+      (if (< fives 3)
+          (setf score (+ score (* 50 fives)))))
+    (print score)))
+
 
 (define-test score-of-an-empty-list-is-zero
   (assert-equal 0 (score)))
